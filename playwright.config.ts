@@ -1,7 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  globalSetup: "./global-setup",
   testDir: "./tests",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -27,14 +26,19 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-    storageState: "./LoginAuthCQ.json",
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
+      name: "setup",
+      testDir: "./",
+      testMatch: "global-setup.ts",
+    },
+    {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
+      use: { ...devices["Desktop Chrome"], storageState: "./login-auth.json" },
     },
   ],
 });
